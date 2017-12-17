@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div :class="{'overlay': true, 'transparent': transparency}"></div>
+        <div :class="{'overlay': true}"></div>
         <div :class="{'card': true, 'settings': true, 'transparent': transparency}">
             <div :class="{'card-header': true, 'transparent': transparency}">
                 <h1>Settings</h1>

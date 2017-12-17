@@ -11,6 +11,7 @@ import Settings from '@/components/Settings';
 import Modal from '@/components/Modal';
 import Listing from '@/components/Listing';
 import ListingList from '@/components/Listing-List';
+import Feedback from '@/components/Feedback';
 
 Vue.config.productionTip = false;
 window.axios = axios;
@@ -23,11 +24,14 @@ Vue.component('settings', Settings);
 Vue.component('modal', Modal);
 Vue.component('listing', Listing);
 Vue.component('listing-list', ListingList);
+Vue.component('feedback', Feedback);
 
 /* eslint-disable no-new */
-new Vue({
+let vue = new Vue({
   el: '#app',
   router,
   template: '<App/>',
   components: { App },
 });
+
+window.vue = vue;

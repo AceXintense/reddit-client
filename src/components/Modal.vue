@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div :class="{'overlay': true, 'transparent': transparency}"></div>
+        <div :class="{'overlay': true}"></div>
         <div :class="{'card': true, 'card-modal': true, 'transparent': transparency}">
             <div :class="{'card-header': true, 'transparent': transparency}">
                 <h1>{{ title }}</h1>
@@ -19,7 +19,7 @@
 <script>
 
     export default {
-        props: ['title'],
+        props: ['title', 'transparency'],
         data() {
             return {};
         },
@@ -32,14 +32,15 @@
 
 </script>
 
-<style>
+<style scoped>
 
     .card.card-modal {
         position: fixed;
         left: 0;
         right: 0;
         width: 500px;
-        height: 400px;
+        min-height: 400px;
+        max-height: 80vh;
         z-index: 100000000000000;
         top: 200px;
         margin: auto;
@@ -64,7 +65,12 @@
     }
 
     .card.card-modal .view {
-        padding-top: 130px;
+        padding: 130px 20px 20px 20px;
+    }
+
+    .card.card-modal .view {
+        position: relative;
+        height: auto;
     }
 
 </style>
