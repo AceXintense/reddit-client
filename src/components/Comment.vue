@@ -4,7 +4,7 @@
             <i class="fa fa-calendar-o" aria-hidden="true"></i>
             {{ timeConverter(comment.data.created) }}
         </p>
-        <div v-html="checkCommentForLink(comment.data.body)"></div>
+        <div v-html="compiledMarkdown"></div>
         <div class="meta">
             <p class="author">{{ comment.data.author }}</p>
             <div class="up">
@@ -28,6 +28,8 @@
 
 <script>
 
+    let marked = require('marked');
+
     export default {
         props: ['comment'],
         data() {
@@ -35,18 +37,23 @@
                 'showReplies': true
             }
         },
+        computed: {
+            compiledMarkdown: function () {
+                return marked(this.comment.data.body, { sanitize: true })
+            }
+        },
         methods: {
-            checkCommentForLink(body) {
-                const regex = /\[(.*)\]\(((http|https):\/\/(\S*))\)/gim;
-                const regexReddit = /\[(.*)\]\(((\S*))\)/gim;
-                if (regex.test(body)) {
-                    body = body.replace(regex, '<a href="$2" target="_blank">$1</a>');
-                }
-                if (regexReddit.test(body)) {
-                    body = body.replace(regexReddit, '<a href="' + baseURL + '$2" target="_blank">$1</a>');
-                }
-                return body;
-            },
+            // checkCommentForLink(body) {
+            //     const regex = /\[(.*)\]\(((http|https):\/\/(\S*))\)/gim;
+            //     const regexReddit = /\[(.*)\]\(((\S*))\)/gim;
+            //     if (regex.test(body)) {
+            //         body = body.replace(regex, '<a href="$2" target="_blank">$1</a>');
+            //     }
+            //     if (regexReddit.test(body)) {
+            //         body = body.replace(regexReddit, '<a href="' + baseURL + '$2" target="_blank">$1</a>');
+            //     }
+            //     return body;
+            // },
             timeConverter(UNIX_timestamp) {
                 var a = new Date(UNIX_timestamp * 1000);
                 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

@@ -10,7 +10,7 @@ import Comment from '@/components/Comment';
 import Settings from '@/components/Settings';
 import Modal from '@/components/Modal';
 import Listing from '@/components/Listing';
-import ListingList from '@/components/Listing-List';
+import ListingList from '@/components/ListingList';
 import Feedback from '@/components/Feedback';
 
 Vue.config.productionTip = false;

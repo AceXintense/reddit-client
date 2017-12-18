@@ -1,6 +1,9 @@
 <template>
     <div>
         <loader v-if="!listings"></loader>
+
+        <listing-size @sizeChanged="changeSize"></listing-size>
+
         <div class="card">
             <div :class="{'card-header': true, 'transparent': transparency}">
                 <h1>{{ subreddit }}</h1>
@@ -44,6 +47,14 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="pagination">
+
+                    <button class="btn btn-default" v-if="before !== null" @click="previousPage">Previous Page</button>
+                    <button class="btn btn-primary" v-if="after !== null" @click="nextPage">Next Page</button>
+
+                </div>
+
             </div>
         </div>
 
@@ -52,15 +63,27 @@
 
 
 <script>
+    import ListingSize from '@/components/ListingSize';
+
     export default {
         name: 'Listing-List',
         props: ['transparency', 'subreddit'],
+        components: {'listing-size': ListingSize},
         data() {
             return {
                 listings: [],
+                listingSize: 25,
+                after: null,
+                before: null
             }
         },
         methods: {
+            nextPage() {
+                this.getListings('forward');
+            },
+            previousPage() {
+                this.getListings('backward');
+            },
             toggleSettings() {
                 this.$emit('toggleSettings');
             },
@@ -70,17 +93,54 @@
             },
             selectListing(data) {
                 this.$emit('selectedListing', data)
+            },
+            changeSize(size) {
+                this.listingSize = size;
+                this.getListings();
+            },
+            getListings(direction) {
+                this.listings = null;
+                let queryString = '&';
+                switch (direction) {
+                    case 'forward':
+                        queryString += 'after=' + this.after;
+                        break;
+                    case 'backward':
+                        queryString += 'before=' + this.before;
+                        break;
+                }
+
+                axios.get(baseURL + '/r/' + this.subreddit + '.json?limit=' + this.listingSize + '&count=' + this.listingSize + queryString).then(
+                    (response) => {
+                        this.listings = response.data.data.children;
+                        this.before = response.data.data.before;
+                        this.after = response.data.data.after;
+                    }
+                );
             }
         },
         watch: {
             'subreddit'(to, from) {
-                this.listings = null;
-                axios.get(baseURL + '/r/' + this.subreddit + '.json').then(
-                    (response) => {
-                        this.listings = response.data.data.children;
-                    }
-                );
+                this.getListings();
             }
         }
     }
 </script>
+
+<style scoped>
+
+    .view {
+        padding-bottom: 50px;
+    }
+
+    .pagination {
+        position: fixed;
+        bottom: 10px;
+        padding-left: 10px;
+    }
+
+    .pagination .btn-primary {
+        margin-left: 10px;
+    }
+
+</style>
